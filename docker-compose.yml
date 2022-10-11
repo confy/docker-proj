@@ -10,14 +10,30 @@ services:
     restart: unless-stopped
     networks:
       - inet
+
+  show-results:
+    image: proj-show-results
+    build:
+      context: ./show_results
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      HOSTNAME: localhost
+      PORT: 5000
+      LOGIN_PATH: /
+    networks:
+      - inet
+
   authentication:
     image: proj-authentication
     build:
-      context: ./authe_service
+      context: ./auth_service
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "5000"
+      - "5000:5000"
     networks:
       - inet
 
