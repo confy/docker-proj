@@ -2,11 +2,9 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
-def login():
-    args = request.args
-    
-    if args.get('username') == 'admin' and args.get('password') == 'admin':
+@app.route('/', methods=['POST'])
+def login(body):
+    if body['username'] == 'admin' and body['password'] == 'admin':
         return 'Logged in', 200
     
     return 'Invalid credentials', 401
