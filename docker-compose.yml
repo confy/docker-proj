@@ -1,13 +1,23 @@
 version: '3'
 services:
-  frontend:
-    image: proj-frontend
+  enter-data:
+    image: proj-enter-data
     build:
-      context: ./frontend
+      context: ./enter_data
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     restart: unless-stopped
+    networks:
+      - inet
+  authentication:
+    image: proj-authentication
+    build:
+      context: ./authe_service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5000"
     networks:
       - inet
 
