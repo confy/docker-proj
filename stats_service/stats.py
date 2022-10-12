@@ -1,6 +1,6 @@
 import uuid
 import pandas as pd
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 class Stats():
     id: str = Field(default_factory=uuid.uuid4, alias="_id")
@@ -13,6 +13,8 @@ class Stats():
         df = pd.DataFrame.from_records(
             [w.to_dict() for w in workouts]
         )
+        df['end_timestamp'] = pd.to_datetime(df['end_timestamp'], format='%Y-%m-%dT%H:%M:%S.%f%z')
+        df['start_timestamp'] = pd.to_datetime(df['start_timestamp'], format='%Y-%m-%dT%H:%M:%S.%f%z')
         duration_delta = df["end_timestamp"] - df["start_timestamp"]
         df["workout_duration_min"] = duration_delta.dt.total_seconds() / 60
         

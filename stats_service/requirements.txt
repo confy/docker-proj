@@ -2,3 +2,5 @@ sqlalchemy
 pandas
 pymysql
 pymongo[srv]
+pydantic
+schedule

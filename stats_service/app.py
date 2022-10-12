@@ -1,5 +1,5 @@
 import os
-import sched, time
+import schedule, time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from base import Base
@@ -26,8 +26,8 @@ MONGO_USER = os.getenv('MONGO_USER', 'root')
 MONGO_PASSWORD = os.getenv('MONGO_PASSWORD', 'test_pass')
 MONGO_PORT = os.getenv('MONGO_PORT', 27017)
 MONGO_DATABASE = os.getenv('MONGO_DATABASE', 'proj')
-MONGO_CLIENT= MongoClient('mongodb+srv://' +
-    f'{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}/?retryWrites=true&w=majority')
+MONGO_CLIENT= MongoClient('mongodb://' +
+    f'{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_HOST}/?retryWrites=true&w=majority')
 MONGO_DB = MONGO_CLIENT[MONGO_DATABASE]
 print("Connected to MongoDB database.")
 
@@ -45,6 +45,7 @@ def publish_stats() -> None:
     """
     print("Running \"publish_stats\"")
     workouts = get_workouts()
+    print(workouts)
     if (len(workouts) > 0):
         stats = Stats(workouts)
         MONGO_DB["stats"].insert_one(stats.to_dict())
@@ -62,14 +63,17 @@ def get_workouts() -> list:
     session = DB_SESSION()
     
     workouts = session.query(Workout).all()
+    print(workouts)
     
     session.close()
     
     return workouts
+
     
-    
+        
 if __name__ == '__main__':
     print("Starting stats service")
-    s = sched.scheduler(time.time, time.sleep)
-    s.enter(PUBLISH_SECONDS, 1, publish_stats)
-    s.run()
+    schedule.every(PUBLISH_SECONDS).seconds.do(publish_stats)
+    while 1:
+        schedule.run_pending()
+        

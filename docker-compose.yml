@@ -104,7 +104,10 @@ services:
     links:
       - "mysql:database"
     depends_on:
-      - mysql-setup
+      mysql:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
     networks:
       - inet
 
@@ -130,6 +133,7 @@ services:
 
 volumes:
   proj_mysql:
+  proj_mongodb:
 
 networks:
   inet:
