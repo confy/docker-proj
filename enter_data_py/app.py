@@ -18,7 +18,7 @@ conf = {
     "port": os.getenv("DB_PORT"),
     "db": os.getenv("DB_DATABASE"),
     "auth_host": os.getenv("AUTH_HOST"),
-    "auth_port": os.getenv("AUTH_PORT")
+
 }
 
 DB_ENGINE = create_engine(
@@ -28,14 +28,37 @@ Base.metadata.bind = DB_ENGINE
 DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
 
-def get_index():
-    return flask.send_from_directory('www', 'index.html')
+def authenticate(body):
+    auth_body = {
+        "username": body["username"],
+        "password": body["password"]
+    }
+    r = requests.post(
+        f"http://{conf['auth_host']}/", json=auth_body)
+    return r.status_code == 200
 
 
 def post_workout(body):
     """Authorize credentials and add a new workout if valid credentials are provided"""
-    r = 
-    return body, 201
+    logged_in = authenticate(body)
+    if not logged_in:
+        return "Invalid Credentials", 401
+
+    workout = Workout(
+        body['workout']["start_timestamp"],
+        body['workout']["end_timestamp"],
+        body['workout']["minimum_heart_rate"],
+        body['workout']["peak_heart_rate"],
+        body['workout']["calories_burned"]
+    )
+    session = DB_SESSION()
+    session.add(workout)
+    session.commit()
+    return NoContent, 201
+
+
+def get_index():
+    return flask.send_from_directory('www', 'index.html')
 
 
 options = {"swagger_ui": False}
