@@ -5,7 +5,7 @@ from base import Base
 
 HOST = os.getenv('DB_HOST', 'localhost')
 USER = os.getenv('DB_USER', 'root')
-PASSWORD = os.getenv('DB_PASS', 'test_pass')
+PASSWORD = os.getenv('DB_PASSWORD', 'test_pass')
 DATABASE = os.getenv('DB_DATABASE', 'proj')
 PORT = os.getenv('DB_PORT', 3306)
 
