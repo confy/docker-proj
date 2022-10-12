@@ -45,7 +45,7 @@ app.post('/auth', async (req, res) => {
     // Make sure they're not empty
     if (username && password) {
         // Check if the user exists
-        const url = `http://localhost/`;
+        const url = `http://${process.env.HOSTNAME}`;
         console.log(url)
         const raw_response = await fetch(url, {
             method: 'POST',
