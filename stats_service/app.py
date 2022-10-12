@@ -6,11 +6,11 @@ from stats import Stats
 from workout import Workout
 from apscheduler.schedulers.background import BackgroundScheduler
 
-DATABASE = os.getenv('DATABASE', 'proj')
-HOSTNAME = os.getenv('HOSTNAME', 'localhost')
-PORT = os.getenv('PORT', 3306)
-USER = os.getenv('USER', 'root')
-PASSWORD = os.getenv('PASSWORD', 'password')
+DATABASE = os.getenv('DB_DATABASE', 'proj')
+HOSTNAME = os.getenv('DB_HOST', 'localhost')
+PORT = os.getenv('DB_PORT', 3306)
+USER = os.getenv('DB_USER', 'root')
+PASSWORD = os.getenv('DB_PASS', 'password')
 PUBLISH_SECONDS = os.getenv('PUBLISH_SECONDS', 5)
 
 DB_ENGINE = create_engine("mysql+pymysql://" +

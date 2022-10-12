@@ -1,22 +1,33 @@
 import mysql.connector
 import os
 
-HOST = os.getenv('HOST', 'localhost')
-USER = os.getenv('USER', 'root')
-PASSWORD = os.getenv('PASSWORD', 'password')
-DATABASE = os.getenv('DATABASE', 'proj')
+HOST = os.getenv('DB_HOST', 'localhost')
+USER = os.getenv('DB_USER', 'root')
+PASSWORD = os.getenv('DB_PASS', 'password')
+DATABASE = os.getenv('DB_DATABASE', 'proj')
 
 db_conn = mysql.connector.connect(host=HOST,
     user='root', password=PASSWORD, database=DATABASE)
+print(f"Connected to \"{DATABASE}\" database on \"{HOST}\" as \"{USER}\"")
 
 c = db_conn.cursor();
+
+c.execute('''
+          DROP TABLE workout
+          ''');
+print('Dropped table workout.')
+
 c.execute('''
           CREATE TABLE workout
           (id INT NOT NULL AUTO_INCREMENT,
            start_timestamp VARCHAR(100) NOT NULL,
            end_timestamp VARCHAR(100) NOT NULL,
-           CONSTRAINT train_arrival_pk PRIMARY KEY (id))
+           minimum_heart_rate INT NOT NULL,
+           peak_heart_rate INT NOT NULL,
+           calories_burned INT NOT NULL,
+           CONSTRAINT workout_pk PRIMARY KEY (id))
           ''');
+print('Created table workout.')
 
 db_conn.commit();
 db_conn.close();
