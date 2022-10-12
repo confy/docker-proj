@@ -3,7 +3,7 @@ services:
   enter-data:
     image: proj-enter-data
     build:
-      context: ./enter_data_py
+      context: ./enter_data
       dockerfile: Dockerfile
     ports:
       - "8080:8080"

@@ -1,6 +1,7 @@
 import connexion
 import os
 import flask
+import sys
 import requests
 
 
@@ -40,30 +41,37 @@ def authenticate(body):
 
 def post_workout(body):
     """Authorize credentials and add a new workout if valid credentials are provided"""
-    logged_in = authenticate(body)
-    if not logged_in:
-        return "Invalid Credentials", 401
+    try:
+        logged_in = authenticate(body)
+        if not logged_in:
+            print("Invalid credentials", file=sys.stderr)
+            return "Invalid Input", 405
 
-    workout = Workout(
-        body['workout']["start_timestamp"],
-        body['workout']["end_timestamp"],
-        body['workout']["minimum_heart_rate"],
-        body['workout']["peak_heart_rate"],
-        body['workout']["calories_burned"]
-    )
-    session = DB_SESSION()
-    session.add(workout)
-    session.commit()
-    return NoContent, 201
+        workout = Workout(
+            body['workout']["start_timestamp"],
+            body['workout']["end_timestamp"],
+            body['workout']["minimum_heart_rate"],
+            body['workout']["peak_heart_rate"],
+            body['workout']["calories_burned"]
+        )
+        session = DB_SESSION()
+        session.add(workout)
+        session.commit()
+        return NoContent, 201
+    except Exception as e:
+        print(e, file=sys.stderr)
+        return "Invalid Input", 405
 
 
 def get_index():
     return flask.send_from_directory('www', 'index.html')
 
+def get_app_js():
+    return flask.send_from_directory('www', 'app.js')
 
 options = {"swagger_ui": False}
 app = connexion.FlaskApp(__name__, specification_dir='', options=options)
 app.add_api("openapi.yml", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
-    app.run(port=8080)
+    app.run(host='0.0.0.0', port=8080)

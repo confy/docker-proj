@@ -18,6 +18,18 @@ paths:
             text/html:
               schema:
                 type: string
+  /app.js:
+    get:
+      summary: Get app.js
+      description: Returns app.js
+      operationId: app.get_app_js
+      responses:
+        "200":
+          description: OK
+          content:
+            text/javascript:
+              schema:
+                type: string
   /data:
     post:
       summary: Add a new workout
@@ -30,7 +42,7 @@ paths:
             schema:
               $ref: "#/components/schemas/Workout"
       responses:
-        "200":
+        "201":
           description: OK
         "405":
           description: Invalid input
