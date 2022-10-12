@@ -1,6 +1,14 @@
+import uuid
 import pandas as pd
+from pydantic import BaseModel, Field
 
 class Stats():
+    id: str = Field(default_factory=uuid.uuid4, alias="_id")
+    avg_peak_hr: float = Field(...)
+    avg_min_hr: float = Field(...)
+    avg_cal_burned: float = Field(...)
+    avg_workout_duration: float = Field(...)
+    
     def __init__(self, workouts: list) -> None:
         df = pd.DataFrame.from_records(
             [w.to_dict() for w in workouts]

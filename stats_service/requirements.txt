@@ -1,4 +1,4 @@
 sqlalchemy
-apscheduler
 pandas
 pymysql
+pymongo[srv]
