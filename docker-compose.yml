@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   enter-data:
     image: proj-enter-data
@@ -15,11 +15,26 @@ services:
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: test_pass
-
+    
     restart: unless-stopped
     depends_on:
       - authentication
       - mysql
+    networks:
+      - inet
+
+  show-results:
+    image: proj-show-results
+    build:
+      context: ./show_results
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      HOSTNAME: authentication
+    networks:
+      - inet
 
   authentication:
     image: proj-authentication
@@ -27,21 +42,26 @@ services:
       context: ./auth_service
       dockerfile: Dockerfile
     restart: unless-stopped
-    ports:
-      - "5000:80"
+    networks:
+      - inet
 
   mysql:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: "proj"
-      MYSQL_ROOT_PASSWORD: "test_pass"
+      MYSQL_DATABASE: 'proj'
+      MYSQL_ROOT_PASSWORD: 'test_pass'
     ports:
-      - "3306:3306"
+      - '3306:3306'
     expose:
-      - "3306"
+      - '3306'
     volumes:
       - proj_mysql:/var/lib/mysql
+    networks:
+      - inet
 
 volumes:
   proj_mysql:
+
+networks:
+  inet:
