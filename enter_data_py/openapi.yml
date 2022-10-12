@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  description: This API provides event stats
+  version: "1.0.0"
+  title: Stats API
+  contact:
+    email: mmulder10@bcit.ca
+paths:
+  /:
+    get:
+      summary: Get Index.html
+      description: Returns index.html
+      operationId: app.get_index
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+  /data:
+    post:
+      summary: Add a new workout
+      description: Add a new workout
+      operationId: app.post_workout
+      requestBody:
+        description: Workout object (with user/pass) that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Workout"
+      responses:
+        "200":
+          description: OK
+        "405":
+          description: Invalid input
+components:
+  schemas:
+    Workout:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        workout:
+          type: object
+          properties:
+            start_timestamp:
+              type: string
+              format: date-time
+            end_timestamp:
+              type: string
+              format: date-time
+            minimum_heart_rate:
+              type: integer
+            peak_heart_rate:
+              type: integer
+            calories_burned:
+              type: integer
