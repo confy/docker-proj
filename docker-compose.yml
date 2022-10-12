@@ -61,6 +61,22 @@ services:
     networks:
       - inet
 
+  mysql-setup:
+    image: proj-mysql-setup
+    build:
+      context: ./mysql_setup
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: mysql
+      DB_DATABASE: proj
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: test_pass
+    depends_on:
+      - mysql
+    networks:
+      - inet
+
 volumes:
   proj_mysql:
 
