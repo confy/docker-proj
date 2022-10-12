@@ -59,7 +59,7 @@ services:
       - proj_mysql:/var/lib/mysql
     networks:
       - inet
-      
+
   mysql-setup:
     image: proj-mysql-setup
     build:
@@ -71,6 +71,10 @@ services:
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: test_pass
+    depends_on:
+      - mysql
+    networks:
+      - inet
 
 volumes:
   proj_mysql:

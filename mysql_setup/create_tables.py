@@ -3,7 +3,7 @@ import os
 
 HOST = os.getenv('DB_HOST', 'localhost')
 USER = os.getenv('DB_USER', 'root')
-PASSWORD = os.getenv('DB_PASS', 'password')
+PASSWORD = os.getenv('DB_PASS', 'test_pass')
 DATABASE = os.getenv('DB_DATABASE', 'proj')
 
 db_conn = mysql.connector.connect(host=HOST,
@@ -12,10 +12,13 @@ print(f"Connected to \"{DATABASE}\" database on \"{HOST}\" as \"{USER}\"")
 
 c = db_conn.cursor();
 
-c.execute('''
-          DROP TABLE workout
-          ''');
-print('Dropped table workout.')
+try:
+    c.execute('''
+            DROP TABLE workout
+            ''');
+    print('Dropped table workout.')
+except:
+    print('Table workout does not exist.')
 
 c.execute('''
           CREATE TABLE workout
