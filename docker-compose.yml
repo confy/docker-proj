@@ -45,20 +45,20 @@ services:
     networks:
       - inet
 
-  # mysql:
-  #   image: mysql:5.7
-  #   restart: always
-  #   environment:
-  #     MYSQL_DATABASE: 'proj'
-  #     MYSQL_ROOT_PASSWORD: 'test_pass'
-  #   ports:
-  #     - '3306:3306'
-  #   expose:
-  #     - '3306'
-  #   volumes:
-  #     - proj_mysql:/var/lib/mysql
-  #   networks:
-  #     - inet
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'proj'
+      MYSQL_ROOT_PASSWORD: 'test_pass'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - proj_mysql:/var/lib/mysql
+    networks:
+      - inet
 
 volumes:
   proj_mysql:
