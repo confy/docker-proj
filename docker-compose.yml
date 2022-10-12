@@ -57,7 +57,7 @@ services:
     healthcheck:
             test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
             timeout: 20s
-            retries: 10
+            retries: 1
     expose:
       - '3306'
     volumes:
@@ -81,6 +81,24 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      - inet
+
+  stats:
+    image: proj-stats
+    build:
+      context: ./stats_service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: mysql
+      DB_DATABASE: proj
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: test_pass
+      PUBLISH_SECONDS: 5
+    depends_on:
+      - mysql-setup
     networks:
       - inet
 
