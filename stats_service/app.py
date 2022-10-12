@@ -1,6 +1,6 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy import sessionmaker
+from sqlalchemy.orm import sessionmaker
 from base import Base
 from stats import Stats
 from workout import Workout
@@ -11,7 +11,7 @@ HOSTNAME = os.getenv('DB_HOST', 'localhost')
 PORT = os.getenv('DB_PORT', 3306)
 USER = os.getenv('DB_USER', 'root')
 PASSWORD = os.getenv('DB_PASS', 'password')
-PUBLISH_SECONDS = os.getenv('PUBLISH_SECONDS', 5)
+PUBLISH_SECONDS = int(os.getenv('PUBLISH_SECONDS', 5))
 
 DB_ENGINE = create_engine("mysql+pymysql://" +
     f"{USER}:{PASSWORD}@{HOSTNAME}:{PORT}/{DATABASE}");
@@ -27,6 +27,7 @@ def publish_stats() -> Stats:
     Returns:
         Stats: _description_
     """
+    print("Running \"publish_stats\"")
     workouts = get_workouts()
     stats = Stats(workouts)
 
@@ -57,4 +58,5 @@ def init_scheduler():
     
     
 if __name__ == '__main__':
+    print("Starting stats service")
     init_scheduler()

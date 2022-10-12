@@ -3,7 +3,7 @@ from xml.dom.pulldom import START_ELEMENT
 
 from sqlalchemy import Column, DateTime, Integer, String
 
-from .base import Base
+from base import Base
 
 
 class Workout(Base):
