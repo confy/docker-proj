@@ -1,26 +1,33 @@
-import mysql.connector
 import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from base import Base
 
 HOST = os.getenv('DB_HOST', 'localhost')
 USER = os.getenv('DB_USER', 'root')
 PASSWORD = os.getenv('DB_PASS', 'test_pass')
 DATABASE = os.getenv('DB_DATABASE', 'proj')
+PORT = os.getenv('DB_PORT', 3306)
 
-db_conn = mysql.connector.connect(host=HOST,
-    user='root', password=PASSWORD, database=DATABASE)
+DB_ENGINE = create_engine("mysql+pymysql://" +
+    f"{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}");
+
+Base.metadata.bind = DB_ENGINE
+DB_SESSION = sessionmaker(bind=DB_ENGINE)
+
 print(f"Connected to \"{DATABASE}\" database on \"{HOST}\" as \"{USER}\"")
 
-c = db_conn.cursor();
-
 try:
-    c.execute('''
+    with DB_ENGINE.connect() as con:
+        rs = con.execute('''
             DROP TABLE workout
-            ''');
-    print('Dropped table workout.')
+            ''')
+        print('Dropped table workout.')
 except:
     print('Table workout does not exist.')
 
-c.execute('''
+with DB_ENGINE.connect() as con:
+    rs = con.execute('''
           CREATE TABLE workout
           (id INT NOT NULL AUTO_INCREMENT,
            start_timestamp VARCHAR(100) NOT NULL,
@@ -29,8 +36,5 @@ c.execute('''
            peak_heart_rate INT NOT NULL,
            calories_burned INT NOT NULL,
            CONSTRAINT workout_pk PRIMARY KEY (id))
-          ''');
-print('Created table workout.')
-
-db_conn.commit();
-db_conn.close();
+          ''')
+    print('Created table workout.')

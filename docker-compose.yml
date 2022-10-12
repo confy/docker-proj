@@ -67,11 +67,13 @@ services:
       context: ./mysql_setup
       dockerfile: Dockerfile
     environment:
-      DB_HOST: mysql
+      DB_HOST: database
       DB_DATABASE: proj
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: test_pass
+    links:
+      - "mysql:database"
     depends_on:
       - mysql
     networks:
