@@ -89,21 +89,51 @@ services:
     build:
       context: ./stats_service
       dockerfile: Dockerfile
-    restart: unless-stopped
     environment:
-      DB_HOST: mysql
+      DB_HOST: database
       DB_DATABASE: proj
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: test_pass
       PUBLISH_SECONDS: 5
+      MONGO_DATABASE: stats
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      MONGO_USER: root
+      MONGO_PASSWORD: test_pass
+    links:
+      - "mysql:database"
     depends_on:
-      - mysql-setup
+      mysql:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    networks:
+      - inet
+
+
+  mongodb:
+    image: mongo:4.0.3
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: test_pass
+    ports:
+      - '27017:27017'
+    healthcheck:
+            test: ["CMD", "mongo" ,"--eval", "db.adminCommand('ping')"]
+            timeout: 20s
+            retries: 1
+    expose:
+      - '27017'
+    volumes:
+      - proj_mongodb:/data/db
     networks:
       - inet
 
 volumes:
   proj_mysql:
+  proj_mongodb:
 
 networks:
   inet:
