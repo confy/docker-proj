@@ -8,11 +8,19 @@ import { join } from 'path';
 import fetch from 'node-fetch';
 import path from 'node:path'
 import { fileURLToPath } from 'url';
+import { MongoClient } from 'mongodb';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+const MONGO_USER = process.env.MONGO_USER;
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
+const MONGO_HOST = process.env.MONGO_HOST;
+const MONGO_PORT = process.env.MONGO_PORT;
+const uri_mongo = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri_mongo);
 
 app.use(session({
     secret: 'secret',
@@ -72,8 +80,16 @@ app.post('/auth', async (req, res) => {
     }
 });
 
-app.get('/results', (req, res) => {
+app.get('/results', async (req, res) => {
     if (req.session.loggedin) {
+        // Get results from MongoDB
+        await client.connect()
+        const mongo_db = client.db(process.env.MONGO_DATABASE);
+        const collection = mongo_db.collection('stats')
+        const findResult = await collection
+            .find().toArray();
+        console.log(findResult)
+
         // Render results
         res.send("HAHAHAHAHAHAHAHA")
     } else {
