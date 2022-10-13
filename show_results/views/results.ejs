@@ -1,0 +1,15 @@
+<table>
+    <tr>
+        <th>Avg Peak HeartRate</th><th>Avg Min Heartrate</th><th>Avg Calories Burned</th><th>Average Workout Duration</th><th>Date Calculated</th>
+    </tr>
+  
+    <% for (var i = 0; i < data.length; i++) { %>
+      <tr>
+        <td><%= data[i].avg_peak_hr %> BPM</td>
+        <td><%= data[i].avg_min_hr %> BPM</td>
+        <td><%= data[i].avg_cal_burned %> cal</td>
+        <td><%= data[i].avg_workout_duration_minutes %> mins</td>
+        <td><%= data[i].date_calculated %></td>
+    </tr>    
+    <% } %>
+  </table>
