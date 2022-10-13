@@ -1,5 +1,6 @@
 import uuid
 import pandas as pd
+from datetime import datetime
 from pydantic import Field
 
 class Stats():
@@ -8,6 +9,7 @@ class Stats():
     avg_min_hr: float = Field(...)
     avg_cal_burned: float = Field(...)
     avg_workout_duration: float = Field(...)
+    date_calculated: datetime = Field(...)
     
     def __init__(self, workouts: list) -> None:
         df = pd.DataFrame.from_records(
@@ -22,6 +24,7 @@ class Stats():
         self.avg_min_hr = df['minimum_heart_rate'].mean()
         self.avg_cal_burned = df['calories_burned'].mean()
         self.avg_workout_duration = df["workout_duration_min"].mean()
+        self.date_calculated = datetime.utcnow()
         
         
     def to_dict(self):
@@ -29,5 +32,6 @@ class Stats():
             'avg_peak_hr': self.avg_peak_hr,
             'avg_min_hr': self.avg_min_hr,
             'avg_cal_burned': self.avg_cal_burned,
-            'avg_workout_duration_minutes': self.avg_workout_duration
+            'avg_workout_duration_minutes': self.avg_workout_duration,
+            'date_calculated': self.date_calculated
         }
