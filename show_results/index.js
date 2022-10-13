@@ -9,6 +9,7 @@ import fetch from 'node-fetch';
 import path from 'node:path'
 import { fileURLToPath } from 'url';
 import { MongoClient } from 'mongodb';
+import ejsLayouts from 'express-ejs-layouts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +32,9 @@ app.use(session({
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(express.static(join(__dirname, 'static')));
+
+app.set("view engine", "ejs");
+app.use(ejsLayouts);
 
 // http://localhost:3000/
 app.get('/', (req, res) => {
@@ -91,7 +95,14 @@ app.get('/results', async (req, res) => {
         console.log(findResult)
 
         // Render results
-        res.send("HAHAHAHAHAHAHAHA")
+        const data = [{
+            "avg_peak_hr": 120,
+            "avg_min_hr": 60,
+            "avg_cal_burned": 1000,
+            "avg_workout_duration_minutes": 60,
+            "date_calculated": "2021-10-10T00:00:00Z"
+        }]
+        res.render('results', {data: data});
     } else {
         // Render login
         res.sendFile(join(__dirname + '/static/login.html'));

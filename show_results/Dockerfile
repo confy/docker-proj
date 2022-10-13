@@ -7,6 +7,7 @@ COPY index.js .
 COPY package.json .
 COPY package-lock.json .
 COPY static ./static
+COPY views ./views
 
 RUN npm install
 
