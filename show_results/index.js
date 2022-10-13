@@ -92,7 +92,6 @@ app.get('/results', async (req, res) => {
         const collection = mongo_db.collection('stats')
         const findResult = await collection
             .find().toArray();
-        console.log(findResult)
 
         // Render results
         const data = [{
@@ -102,7 +101,7 @@ app.get('/results', async (req, res) => {
             "avg_workout_duration_minutes": 60,
             "date_calculated": "2021-10-10T00:00:00Z"
         }]
-        res.render('results', {data: data});
+        res.render('results', {data: findResult});
     } else {
         // Render login
         res.sendFile(join(__dirname + '/static/login.html'));
