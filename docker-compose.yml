@@ -101,7 +101,7 @@ services:
       DB_USER: root
       DB_PASSWORD: test_pass
       PUBLISH_SECONDS: 5
-      MONGO_DATABASE: stats
+      MONGO_DATABASE: proj
       MONGO_HOST: mongodb
       MONGO_PORT: 27017
       MONGO_USER: root
@@ -109,8 +109,8 @@ services:
     links:
       - "mysql:database"
     depends_on:
-      mysql:
-        condition: service_healthy
+      mysql-setup:
+        condition: service_completed_successfully
       mongodb:
         condition: service_healthy
     networks:
