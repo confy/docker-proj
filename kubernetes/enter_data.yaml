@@ -1,0 +1,54 @@
+### Create a deployment for the enterdata service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enterdata
+  labels:
+    app: enterdata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: enterdata
+  template:
+    metadata:
+      labels:
+        app: enterdata
+    spec:
+      containers:
+        - name: enterdata
+          image: waleromoon/enterdata:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AUTH_HOST
+              value: authentication
+            - name: DB_HOST
+              value: mysql
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: proj
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: DB_PASSWORD
+---
+# Make the enterdata service available to the outside world
+apiVersion: v1
+kind: Service
+metadata:
+  name: enterdata
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: enterdata

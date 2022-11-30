@@ -1,0 +1,55 @@
+### Create a deployment for the showresults service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: showresults
+  labels:
+    app: showresults
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: showresults
+  template:
+    metadata:
+      labels:
+        app: showresults
+    spec:
+      containers:
+        - name: showresults
+          image: waleromoon/showresults:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: HOSTNAME
+              value: authentication
+            - name: MONGO_DATABASE
+              value: proj
+            - name: MONGO_HOST
+              value: mongodb
+            - name: MONGO_PORT
+              value: "27017"
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secrets
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secrets
+                  key: MONGO_PASSWORD
+---
+# Make the showresults service available to the outside world on port 3000
+apiVersion: v1
+kind: Service
+metadata:
+  name: showresults
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    targetPort: 80
+  selector:
+    app: showresults

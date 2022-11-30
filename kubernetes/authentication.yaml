@@ -1,0 +1,35 @@
+### Create a deployment for the authentication service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication
+  labels:
+    app: authentication
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication
+  template:
+    metadata:
+      labels:
+        app: authentication
+    spec:
+      containers:
+        - name: authentication
+          image: waleromoon/authentication:latest
+          ports:
+            - containerPort: 80
+---
+# Make the authentication service available to the outside world
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: authentication

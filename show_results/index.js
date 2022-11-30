@@ -4,6 +4,8 @@
 
 import express, { json, urlencoded } from 'express';
 import session from 'express-session';
+import {default as connectMongoDBSession} from 'connect-mongodb-session'
+const MongoDBStore = connectMongoDBSession(session)
 import { join } from 'path';
 import fetch from 'node-fetch';
 import path from 'node:path'
@@ -23,8 +25,21 @@ const MONGO_PORT = process.env.MONGO_PORT;
 const uri_mongo = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri_mongo);
 
+var store = new MongoDBStore({
+    uri: uri_mongo,
+    collection: 'mySessions'
+});
+
+store.on('error', function(error) {
+console.log(error);
+});
+
 app.use(session({
+    store: store,
     secret: 'secret',
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+      },
     resave: true,
     saveUninitialized: true
 }));
