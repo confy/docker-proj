@@ -21,7 +21,7 @@ spec:
           ports:
             - containerPort: 80
 ---
-# Make the authentication service available to the outside world
+# Make the authentication service available to internal pods
 apiVersion: v1
 kind: Service
 metadata:
