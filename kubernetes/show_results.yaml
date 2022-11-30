@@ -19,6 +19,13 @@ spec:
         - name: showresults
           image: waleromoon/showresults:latest
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
           ports:
             - containerPort: 80
           env:
@@ -53,3 +60,16 @@ spec:
     targetPort: 80
   selector:
     app: showresults
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: showresults
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: showresults
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 20
